@@ -6,18 +6,22 @@ const path = require('path');
 const bodyParser = require('body-parser')
 const request = require('request');
 
+
 //API key = pk_73008ed623f14d1691b1072e091055be
 
 //callApi function
 
 const callApi = (finishedApi, ticker) => {
-  request('https://cloud.iexapis.com/stable/stock/' + ticker + '/quote?token=pk_73008ed623f14d1691b1072e091055be', {json: true}, (err, resp, body) => {
+  request('https://cloud.iexapis.com/stable/stock/' + ticker + '/quote?token=pk_73008ed623f14d1691b1072e091055be',
+  {json: true}, (err, resp, body) => {
     if (err) {
       return err
     };
     if (resp.statusCode === 200) {
       finishedApi(body);
-    };
+    } else {
+      finishedApi()
+    }
   });
 }
 
@@ -34,14 +38,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
-//Set Handlebars index GET route
+//Set Handlebars GET routes
 app.get('/stock.html', function (req, res) {
-  callApi( function(doneApi) {
     res.render('stock', {
       stock: doneApi
     });
-  }, "aapl");
 });
+
+app.get('/about.html', function(req, res) {
+  res.render('about')
+});
+
 
 app.get('/', function(req, res) {
   res.render('home')
@@ -50,16 +57,13 @@ app.get('/', function(req, res) {
 //Set Handlebars POST route
 app.post('/', function (req, res) {
   const ticker = req.body.stockTicker;
-  callApi( function(doneApi) {
-    res.render('stock', {
-      stock: doneApi
-    });
-  },ticker);
+    callApi( function(doneApi) {
+      res.render('stock', {
+        stock: doneApi
+      });
+    },ticker);
 });
 
-app.get('/about.html', function(req, res) {
-  res.render('about')
-})
 
 //Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
