@@ -1,4 +1,9 @@
 <div class="container">
   <h1>Welcome to NodeStock</h1>
-  <p>{{ stock }}</p>
+  <h2>{{stock.companyName}} ({{stock.symbol}})</h2>
 </div>
+
+
+{{#each stock}}
+  {{@key}} | {{this}}</br>
+{{/each}}
