@@ -35,22 +35,26 @@ app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
 //Set Handlebars index GET route
-app.get('/', function (req, res) {
+app.get('/stock.html', function (req, res) {
   callApi( function(doneApi) {
-    res.render('home', {
+    res.render('stock', {
       stock: doneApi
     });
-  });
+  }, "aapl");
 });
+
+app.get('/', function(req, res) {
+  res.render('home')
+})
 
 //Set Handlebars POST route
 app.post('/', function (req, res) {
   const ticker = req.body.stockTicker;
   callApi( function(doneApi) {
-    res.render('home', {
+    res.render('stock', {
       stock: doneApi
     });
-  },ticker );
+  },ticker);
 });
 
 app.get('/about.html', function(req, res) {
